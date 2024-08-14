@@ -4,21 +4,40 @@
  */
 package edu.utmb.semantic.llmenrichment.util;
 
+import com.opencsv.CSVWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 /**
  *
  * @author tuan
  */
 public class Reporter {
     
+    private static Reporter INSTANCE = null;
+    
     private Reporter() {
     }
     
     public static Reporter getInstance() {
-        return ReporterHolder.INSTANCE;
+        
+        if(INSTANCE == null){
+            INSTANCE = new Reporter();
+        }
+        
+        return INSTANCE;
+        
     }
     
-    private static class ReporterHolder {
-
-        private static final Reporter INSTANCE = new Reporter();
-    }
+     public void writeCsv(String filePath, List<String[]> data) {
+        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath, StandardCharsets.UTF_8))) {
+            writer.writeAll(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    } 
+    
+    
 }

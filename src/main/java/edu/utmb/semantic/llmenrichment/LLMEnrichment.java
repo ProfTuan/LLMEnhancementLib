@@ -20,12 +20,19 @@ import java.io.UnsupportedEncodingException;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
+import edu.utmb.semantic.llmenrichment.util.Reporter;
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("InfiniteLoopStatement")
 public class LLMEnrichment 
 {
+    
+    private ModelParameters modelParams = null;
+    private InferenceParameters inferParams = null;
+    
+    private Reporter llmReporter = null;
+    
     public LLMEnrichment (){
         
     }    
@@ -49,18 +56,21 @@ public class LLMEnrichment
     
     
     // TODO: we need to move this to the Reporter
+    /*
     public void writeCsv(String filePath, List<String[]> data) {
         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath, StandardCharsets.UTF_8))) {
             writer.writeAll(data);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }    
+    }
+*/
        
     public void inference(String sourcepath, String targetpath, String modelpath) throws IOException {
         List<String[]> records = readcsv(sourcepath);
+        llmReporter = Reporter.getInstance();
         
-        ModelParameters modelParams = new ModelParameters()
+        modelParams = new ModelParameters()
             .setModelFilePath(modelpath)
             .setNThreads(16)
             .setNGpuLayers(43);
@@ -85,7 +95,7 @@ public class LLMEnrichment
                                   
                 System.out.println("prompt:  " + prompt);
                 
-                InferenceParameters inferParams = new InferenceParameters(prompt)
+                inferParams = new InferenceParameters(prompt)
                     .setTemperature(0.7f)
                     .setPenalizeNl(true)
                     .setMiroStat(MiroStat.V2)
@@ -106,9 +116,9 @@ public class LLMEnrichment
                 data = data.replace("\n", " ");
                 temp[temp.length-1] = data;                
                 outdata.add(temp);
-                writeCsv(targetpath, outdata);    
+                llmReporter.writeCsv(targetpath, outdata);    
             } 
-            writeCsv(targetpath, outdata);
+            llmReporter.writeCsv(targetpath, outdata);
         }
     }
     
