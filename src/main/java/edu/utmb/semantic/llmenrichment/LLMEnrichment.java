@@ -33,6 +33,10 @@ public class LLMEnrichment
     
     private Reporter llmReporter = null;
     
+    private String model_path ="";
+    private int thread_number;
+    private int gpu_layers;
+    
     public LLMEnrichment (){
         
     }    
@@ -54,7 +58,16 @@ public class LLMEnrichment
         return records;
     }
     
+    public void setModelParameters(String modelPath, int thread_number, int gpu_layers){
+        
+        this.model_path = modelPath;
+        this.thread_number = thread_number;
+        this.gpu_layers = gpu_layers;
+    }
     
+    public void setInferenceParamters(float temp, boolean penalize, MiroStat ms, String stop_string, int num_predict){
+        
+    }
     // TODO: we need to move this to the Reporter
     /*
     public void writeCsv(String filePath, List<String[]> data) {
