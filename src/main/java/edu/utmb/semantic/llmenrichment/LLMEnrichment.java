@@ -135,6 +135,62 @@ public class LLMEnrichment
         }
     }
     
+    public void factchecking(String sourcepath, String targetpath, String modelpath) throws IOException {
+        List<String[]> records = readcsv(sourcepath);
+        
+        ModelParameters modelParams = new ModelParameters()
+            .setModelFilePath(modelpath)
+            .setNThreads(16)
+            .setNGpuLayers(43);
+      
+        List<String[]> outdata = new ArrayList<>();
+        
+        try (LlamaModel model = new LlamaModel(modelParams)) {
+            System.out.println("Fact checking Hootation's natural language translation: inference...");    
+            
+            String system = "\nYou are a helpful assistant. ";
+            String question = "Evaluate the accuracy of the ontology axiom's natural language translation.";        
+            for(String[] input: records) { 
+                if (input[0].trim().equals("Axiom Type") || input[0].trim().length()<2){
+                    outdata.add(input);
+                    continue;
+                }
+                
+                String axiom_type = "The axiom type is: " + input[0] + ". ";
+                String axiom = "The axiom is: " + input[1] + ". ";
+                String trans = "The axiom's natural language translation is: " + input[2] + ". ";
+                String prompt = system + "\nUser: " + question + axiom_type + axiom + 
+                                "Is the translation accurate? (Only answer Yes, No, or Don't know):";                                                
+                                  
+                System.out.println("prompt:  " + prompt);
+                
+                InferenceParameters inferParams = new InferenceParameters(prompt)
+                    .setTemperature(0.7f)
+                    .setPenalizeNl(true)
+                    .setMiroStat(MiroStat.V2)
+                    .setStopStrings("User:")
+                    .setNPredict(30);
+                
+                String data = "";
+                for (LlamaOutput output : model.generate(inferParams)) {                    
+                    data += output;
+                }
+                System.out.println("Fact checking:   "+data);
+                
+                String[] temp = new String[input.length+1];                
+                System.arraycopy(input, 0, temp, 0, input.length);
+                int len = data.indexOf(".", 0);
+                if (len != -1)                    
+                    data = data.substring(0, len);                
+                data = data.replace("\n", " ");
+                temp[temp.length-1] = data;                
+                outdata.add(temp);
+                llmReporter.writeCsv(targetpath, outdata);    
+            } 
+            llmReporter.writeCsv(targetpath, outdata);
+        }
+    }
+    
     
     public static void main(String... args){        
         LLMEnrichment infer = new LLMEnrichment();
