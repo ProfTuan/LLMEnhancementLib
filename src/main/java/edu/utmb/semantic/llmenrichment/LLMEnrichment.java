@@ -47,6 +47,8 @@ public class LLMEnrichment
         return records;
     }
     
+    
+    // TODO: we need to move this to the Reporter
     public void writeCsv(String filePath, List<String[]> data) {
         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath, StandardCharsets.UTF_8))) {
             writer.writeAll(data);
@@ -114,6 +116,8 @@ public class LLMEnrichment
     public static void main(String... args){        
         LLMEnrichment infer = new LLMEnrichment();
         
+        
+        
         String sourcepath = "D:/netbean_project/LLMEnrichment/data/People Axioms 11_18.csv";
         //String sourcepath = "D:/netbean_project/LLMEnrichment/data/a.csv";
         //List<String[]> records = infer.readcsv(sourcepath);
@@ -122,6 +126,8 @@ public class LLMEnrichment
         //infer.writeCsv(respath, records);
         
         try{
+            
+            //TODO: We need a class that can download and import a selected model
             String modelpath = "C:/Users/xubin/.cache/modelscope/Meta-Llama-3-8B-Instruct-Q6_K.gguf";
             infer.inference(sourcepath, respath, modelpath);
         }
