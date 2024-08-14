@@ -24,7 +24,7 @@ import edu.utmb.semantic.llmenrichment.util.Reporter;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("InfiniteLoopStatement")
+//@SuppressWarnings("InfiniteLoopStatement")
 public class LLMEnrichment 
 {
     
