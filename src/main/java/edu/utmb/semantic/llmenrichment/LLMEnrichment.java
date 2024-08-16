@@ -11,7 +11,6 @@ import de.kherud.llama.LlamaModel;
 import de.kherud.llama.LlamaOutput;
 import de.kherud.llama.ModelParameters;
 import de.kherud.llama.args.MiroStat;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -42,12 +41,10 @@ public class LLMEnrichment
         
     }    
     
-    /*
     public List<String[]> readcsv(String filepath) {        
         List<String[]> records = null;
         try (CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(filepath), StandardCharsets.UTF_8))) {
             records = reader.readAll();            
-            
             for (String[] record : records) {                
                 System.out.println("Record: " + record.length);
                 for (String field : record) {
@@ -55,13 +52,11 @@ public class LLMEnrichment
                 }
                 System.out.println();
             }
-            
         } catch (IOException | CsvException e) {
             e.printStackTrace();
         }
         return records;
     }
-    */
     
     public void setModelParameters(String modelPath, int thread_number, int gpu_layers){
         
@@ -85,15 +80,11 @@ public class LLMEnrichment
 */
        
     public void inference(String sourcepath, String targetpath, String modelpath) throws IOException {
+        List<String[]> records = readcsv(sourcepath);
         llmReporter = Reporter.getInstance();
-        List<String[]> records = llmReporter.readcsv(sourcepath);
-        
         
         modelParams = new ModelParameters()
-            //.setModelFilePath(modelpath)
-            //.setModelUrl("https://huggingface.co/TheBloke/CodeLlama-7B-GGUF/resolve/main/codellama-7b.Q2_K.gguf")
-            .setHuggingFaceRepository("TheBloke/CapybaraHermes-2.5-Mistral-7B-GGUF")
-            .setHuggingFaceFile("capybarahermes-2.5-mistral-7b.Q2_K.gguf")
+            .setModelFilePath(modelpath)
             .setNThreads(16)
             .setNGpuLayers(43);
       
@@ -145,7 +136,7 @@ public class LLMEnrichment
     }
     
     public void factchecking(String sourcepath, String targetpath, String modelpath) throws IOException {
-        List<String[]> records = llmReporter.readcsv(sourcepath);
+        List<String[]> records = readcsv(sourcepath);
         
         ModelParameters modelParams = new ModelParameters()
             .setModelFilePath(modelpath)
@@ -201,10 +192,7 @@ public class LLMEnrichment
     }
     
     
-    public static void main(String... args){
-        //System.setProperty("de.kherud.llama.lib.path", "D:/AAAAA_pythonProject/amith/java-llama.cpp/src/main/resources/de/kherud/llama/Windows/x86_64");
-        //System.out.println(System.getProperty("de.kherud.llama.lib.path"));
-        // System.exit(0);
+    public static void main(String... args){        
         LLMEnrichment infer = new LLMEnrichment();
         
         
@@ -216,15 +204,21 @@ public class LLMEnrichment
         String respath = "D:/netbean_project/LLMEnrichment/result/t.csv";
         //infer.writeCsv(respath, records);
         
-        
-        
         try{
+            
             //TODO: We need a class that can download and import a selected model
-            String modelpath = "D:/hugging_scope/modelscope/Meta-Llama-3-8B-Instruct-Q6_K.gguf";
+            String modelpath = "C:/Users/xubin/.cache/modelscope/Meta-Llama-3-8B-Instruct-Q6_K.gguf";
             infer.inference(sourcepath, respath, modelpath);
         }
         catch(IOException e){
             e.printStackTrace();
         }
+        
+        
+        
+        
+        
+        
+        
     }
 }

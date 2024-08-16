@@ -4,19 +4,6 @@
  */
 package edu.utmb.semantic.llmenrichment.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-
-import com.opencsv.exceptions.CsvException;
-import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -42,25 +29,6 @@ public class Reporter {
         
         return INSTANCE;
         
-    }
-    
-    public List<String[]> readcsv(String filepath) {        
-        List<String[]> records = null;
-        try (CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(filepath), StandardCharsets.UTF_8))) {
-            records = reader.readAll();            
-            /*
-            for (String[] record : records) {                
-                System.out.println("Record: " + record.length);
-                for (String field : record) {
-                    System.out.print(field + " ");
-                }
-                System.out.println();
-            }
-            */
-        } catch (IOException | CsvException e) {
-            e.printStackTrace();
-        }
-        return records;
     }
     
      public void writeCsv(String filePath, List<String[]> data) {
