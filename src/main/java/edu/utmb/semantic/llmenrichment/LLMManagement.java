@@ -12,6 +12,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import java.util.Scanner;
+
 /**
  *
  * @author mac
@@ -58,14 +60,68 @@ public class LLMManagement {
         return "=".repeat(bars) + " ".repeat(totalBars - bars);
     }
     
+    /*
     public static void main(String[] args) {
         String fileURL = "https://huggingface.co/TheBloke/CodeLlama-7B-GGUF/resolve/main/codellama-7b.Q2_K.gguf";
         String saveDir = "D:/hugging_scope/modelscope/codellama-7b.Q2_K.gguf";
         try {
             downloadFile(fileURL, saveDir);
+            System.out.println(saveDir);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+    }
+    */
+    
+    public static void main(String[] args) {
+        // List of URLs to present to the user
+        String[] urls = {
+            "https://huggingface.co/TheBloke/CodeLlama-7B-GGUF/resolve/main/codellama-7b.Q2_K.gguf",
+            "https://huggingface.co/TheBloke/CodeLlama-7B-GGUF/resolve/main/codellama-7b.Q4_K.gguf",
+            "https://huggingface.co/TheBloke/CodeLlama-7B-GGUF/resolve/main/codellama-7b.Q5_K.gguf"
+        };
+
+        // Display the list of options to the user
+        System.out.println("Please choose a model to download:");
+        for (int i = 0; i < urls.length; i++) {
+            System.out.println((i + 1) + ": " + urls[i]);
+        }
+
+        // Read user input for URL choice
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the number corresponding to the model you want to download: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        // Validate input
+        if (choice < 1 || choice > urls.length) {
+            System.out.println("Invalid choice. Exiting.");
+            return;
+        }
+
+        // Set fileURL based on user choice
+        String fileURL = urls[choice - 1];
+
+        // Extract the file name from the URL
+        String fileName = fileURL.substring(fileURL.lastIndexOf('/') + 1);
+
+        // Prompt the user to enter the save directory
+        System.out.print("Enter the directory where you want to save the file: ");
+        String saveDir = scanner.nextLine();
+
+        // Combine save directory with file name
+        saveDir = saveDir + "/" + fileName;
+
+        // Download the file
+        try {
+            downloadFile(fileURL, saveDir);
+            System.out.println("Model downloading from: " + fileURL);
+            System.out.println("Model downloaded to: " + saveDir);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        scanner.close();
     }
     
 }

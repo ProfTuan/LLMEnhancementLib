@@ -73,6 +73,14 @@ public class LLMEnrichment
     public void setInferenceParamters(float temp, boolean penalize, MiroStat ms, String stop_string, int num_predict){
         
     }
+    
+    public void downloadAndSetModelPath(String fileURL, String saveDir) throws IOException, InterruptedException {
+        // Use LLMManagement to download the model
+        LLMManagement.downloadFile(fileURL, saveDir);
+        // Set the downloaded model's path as the model_path
+        this.model_path = saveDir;
+    }
+    
     // TODO: we need to move this to the Reporter
     /*
     public void writeCsv(String filePath, List<String[]> data) {
@@ -90,10 +98,10 @@ public class LLMEnrichment
         
         
         modelParams = new ModelParameters()
-            //.setModelFilePath(modelpath)
+            .setModelFilePath(modelpath)
             //.setModelUrl("https://huggingface.co/TheBloke/CodeLlama-7B-GGUF/resolve/main/codellama-7b.Q2_K.gguf")
-            .setHuggingFaceRepository("TheBloke/CapybaraHermes-2.5-Mistral-7B-GGUF")
-            .setHuggingFaceFile("capybarahermes-2.5-mistral-7b.Q2_K.gguf")
+            //.setHuggingFaceRepository("TheBloke/CapybaraHermes-2.5-Mistral-7B-GGUF")
+            //.setHuggingFaceFile("capybarahermes-2.5-mistral-7b.Q2_K.gguf")
             .setNThreads(16)
             .setNGpuLayers(43);
       
@@ -201,27 +209,26 @@ public class LLMEnrichment
     }
     
     
-    public static void main(String... args){
+    public static void main(String[] args){
         //System.setProperty("de.kherud.llama.lib.path", "D:/AAAAA_pythonProject/amith/java-llama.cpp/src/main/resources/de/kherud/llama/Windows/x86_64");
         //System.out.println(System.getProperty("de.kherud.llama.lib.path"));
         // System.exit(0);
+        System.out.println("Arguments length: " + args.length);
+        if (args.length < 1) {
+            System.out.println("Usage: java LLMEnrichment <modelSaveDir>");
+            //return;
+        }
+        String saveDir = args[0];
+
         LLMEnrichment infer = new LLMEnrichment();
-        
-        
-        
         String sourcepath = "D:/netbean_project/LLMEnrichment/data/People Axioms 11_18.csv";
-        //String sourcepath = "D:/netbean_project/LLMEnrichment/data/a.csv";
-        //List<String[]> records = infer.readcsv(sourcepath);
-        
         String respath = "D:/netbean_project/LLMEnrichment/result/t.csv";
         //infer.writeCsv(respath, records);
         
-        
-        
         try{
             //TODO: We need a class that can download and import a selected model
-            String modelpath = "D:/hugging_scope/modelscope/Meta-Llama-3-8B-Instruct-Q6_K.gguf";
-            infer.inference(sourcepath, respath, modelpath);
+            //String modelpath = "D:/hugging_scope/modelscope/codellama-7b.Q2_K.gguf";
+            infer.inference(sourcepath, respath, saveDir);
         }
         catch(IOException e){
             e.printStackTrace();
