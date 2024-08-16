@@ -152,83 +152,29 @@ public class LLMEnrichment
         }
     }
     
-    public void factchecking(String sourcepath, String targetpath, String modelpath) throws IOException {
-        List<String[]> records = llmReporter.readcsv(sourcepath);
-        
-        ModelParameters modelParams = new ModelParameters()
-            .setModelFilePath(modelpath)
-            .setNThreads(16)
-            .setNGpuLayers(43);
-      
-        List<String[]> outdata = new ArrayList<>();
-        
-        try (LlamaModel model = new LlamaModel(modelParams)) {
-            System.out.println("Fact checking Hootation's natural language translation: inference...");    
-            
-            String system = "\nYou are a helpful assistant. ";
-            String question = "Evaluate the accuracy of the ontology axiom's natural language translation.";        
-            for(String[] input: records) { 
-                if (input[0].trim().equals("Axiom Type") || input[0].trim().length()<2){
-                    outdata.add(input);
-                    continue;
-                }
-                
-                String axiom_type = "The axiom type is: " + input[0] + ". ";
-                String axiom = "The axiom is: " + input[1] + ". ";
-                String trans = "The axiom's natural language translation is: " + input[2] + ". ";
-                String prompt = system + "\nUser: " + question + axiom_type + axiom + 
-                                "Is the translation accurate? (Only answer Yes, No, or Don't know):";                                                
-                                  
-                System.out.println("prompt:  " + prompt);
-                
-                InferenceParameters inferParams = new InferenceParameters(prompt)
-                    .setTemperature(0.7f)
-                    .setPenalizeNl(true)
-                    .setMiroStat(MiroStat.V2)
-                    .setStopStrings("User:")
-                    .setNPredict(30);
-                
-                String data = "";
-                for (LlamaOutput output : model.generate(inferParams)) {                    
-                    data += output;
-                }
-                System.out.println("Fact checking:   "+data);
-                
-                String[] temp = new String[input.length+1];                
-                System.arraycopy(input, 0, temp, 0, input.length);
-                int len = data.indexOf(".", 0);
-                if (len != -1)                    
-                    data = data.substring(0, len);                
-                data = data.replace("\n", " ");
-                temp[temp.length-1] = data;                
-                outdata.add(temp);
-                llmReporter.writeCsv(targetpath, outdata);    
-            } 
-            llmReporter.writeCsv(targetpath, outdata);
-        }
-    }
-    
-    
     public static void main(String[] args){
-        //System.setProperty("de.kherud.llama.lib.path", "D:/AAAAA_pythonProject/amith/java-llama.cpp/src/main/resources/de/kherud/llama/Windows/x86_64");
-        //System.out.println(System.getProperty("de.kherud.llama.lib.path"));
+        System.setProperty("de.kherud.llama.lib.path", "D:/AAAAA_pythonProject/amith/java-llama.cpp/src/main/resources/de/kherud/llama/Windows/x86_64");
+        System.out.println(System.getProperty("de.kherud.llama.lib.path"));
         // System.exit(0);
+        
+        /*
         System.out.println("Arguments length: " + args.length);
         if (args.length < 1) {
             System.out.println("Usage: java LLMEnrichment <modelSaveDir>");
             //return;
         }
         String saveDir = args[0];
+        */
 
         LLMEnrichment infer = new LLMEnrichment();
-        String sourcepath = "D:/netbean_project/LLMEnrichment/data/People Axioms 11_18.csv";
-        String respath = "D:/netbean_project/LLMEnrichment/result/t.csv";
+        String sourcepath = "D:/netbean_project/LLMEnrichment_local/data/People Axioms 11_18.csv";
+        String respath = "D:/netbean_project/LLMEnrichment_local/result/t.csv";
         //infer.writeCsv(respath, records);
         
         try{
             //TODO: We need a class that can download and import a selected model
-            //String modelpath = "D:/hugging_scope/modelscope/codellama-7b.Q2_K.gguf";
-            infer.inference(sourcepath, respath, saveDir);
+            String modelpath = "D:/hugging_scope/modelscope/codellama-7b.Q2_K.gguf";
+            infer.inference(sourcepath, respath, modelpath);
         }
         catch(IOException e){
             e.printStackTrace();
