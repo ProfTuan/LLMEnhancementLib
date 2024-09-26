@@ -54,7 +54,7 @@ public class LLMConfiguration {
     
     public int getNumThreads(){
         
-        String value = property.getProperty("threads");
+        String value = property.getProperty("threads", "16");
         
         int threads = Integer.parseInt(value);
         
@@ -64,7 +64,7 @@ public class LLMConfiguration {
     
     public int getLayers(){
         
-        String value = property.getProperty("layers");
+        String value = property.getProperty("layers", "43");
         
         int layers = Integer.parseInt(value);
         
@@ -73,7 +73,7 @@ public class LLMConfiguration {
     
    public float getTemperature(){
        
-       String value = property.getProperty("temperature");
+       String value = property.getProperty("temperature", "0.7f");
        
        float temperature = Float.parseFloat(value);
        
@@ -82,7 +82,7 @@ public class LLMConfiguration {
    }
     
    public boolean getShouldPenalize(){
-       String value = property.getProperty("should_penalize");
+       String value = property.getProperty("should_penalize", "true");
        
        boolean penalize = Boolean.parseBoolean(value);
        
@@ -108,10 +108,17 @@ public class LLMConfiguration {
    }
    
    public int predictNumber(){
-       String value = property.getProperty("predict");
+       String value = property.getProperty("predict", "30");
        int predict = Integer.parseInt(value);
        
        return predict;
+   }
+   
+   public String getModelFilePath(){
+       
+       String value = property.getProperty("file_path", "");
+       
+       return value;
    }
     
 }

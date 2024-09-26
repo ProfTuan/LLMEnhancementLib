@@ -8,14 +8,19 @@ import de.kherud.llama.LlamaModel;
 import de.kherud.llama.LlamaOutput;
 import de.kherud.llama.ModelParameters;
 import de.kherud.llama.args.MiroStat;
+import edu.utmb.semantic.llmenrichment.model.LLMParameters;
+import edu.utmb.semantic.llmenrichment.model.NLAxiomData;
 
 import edu.utmb.semantic.llmenrichment.util.Reporter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 //@SuppressWarnings("InfiniteLoopStatement")
 public class LLMEnrichment 
 {
+    
+   private LLMParameters llm_parameters = null;
     
     private ModelParameters modelParams = null;
     private InferenceParameters inferParams = null;
@@ -27,6 +32,8 @@ public class LLMEnrichment
     private int gpu_layers;
     
     public LLMEnrichment (){
+        
+        llm_parameters = LLMParameters.getInstance();
         
     }    
     
@@ -79,6 +86,22 @@ public class LLMEnrichment
         }
     }
 */
+    
+    public void translateAxioms(Set<NLAxiomData> records){
+        
+        modelParams = new ModelParameters();
+        
+        modelParams.setModelFilePath(llm_parameters.getFileModelPath());
+        modelParams.setNThreads(llm_parameters.getNThreads());
+        modelParams.setNGpuLayers(llm_parameters.getNGpuLayers());
+        
+        ArrayList<String> result_data = new ArrayList();
+        
+        try(LlamaModel model = new LlamaModel(modelParams)){
+            
+        }
+        
+    }
        
     public void inference(String sourcepath, String targetpath, String modelpath) throws IOException {
         llmReporter = Reporter.getInstance();

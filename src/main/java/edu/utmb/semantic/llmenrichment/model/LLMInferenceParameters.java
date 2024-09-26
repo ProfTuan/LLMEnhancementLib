@@ -5,6 +5,7 @@
 package edu.utmb.semantic.llmenrichment.model;
 
 import de.kherud.llama.args.MiroStat;
+import edu.utmb.semantic.llmenrichment.util.LLMConfiguration;
 
 /**
  *
@@ -24,6 +25,14 @@ public class LLMInferenceParameters {
     
     public LLMInferenceParameters(){
         
+        LLMConfiguration config = LLMConfiguration.getInstance();
+        
+        temperature = config.getTemperature();
+        penalize = config.getShouldPenalize();
+        miroStatVersion = config.getMiroStatType();
+        num_predict = config.predictNumber();
+        
+        
     }
     
     public void setTemperature(float value){
@@ -39,7 +48,7 @@ public class LLMInferenceParameters {
         this.penalize = value;
     }
     
-    public boolean shouldPenalize(){
+    public boolean getShouldPenalize(){
         return this.penalize;
     }
     
@@ -59,6 +68,8 @@ public class LLMInferenceParameters {
     public String getStopString (){
         return this.stopString;
     }
+    
+    
     
     
 }

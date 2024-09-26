@@ -10,7 +10,7 @@ import de.kherud.llama.args.MiroStat;
  *
  * @author mac
  */
-public class LLMParameters extends LLMInferenceParameters {
+public class LLMParameters  {
    
     private static LLMParameters INSTANCE = null;
     
@@ -23,6 +23,61 @@ public class LLMParameters extends LLMInferenceParameters {
         inference_parameters = new LLMInferenceParameters();
         model_parameters = new LLMModelParameters();
         
+        
+        
+    }
+    
+    public int getNThreads(){
+        return model_parameters.NThreads();
+    }
+    
+    public void setNThreads(int threads){
+        model_parameters.setNThreads(threads);
+    }
+    
+    public int getNGpuLayers(){
+        return model_parameters.NGpuLayers();
+        
+        
+    }
+    
+    public void setNGpuLayers(int layers){
+        model_parameters.setNGpuLayers(layers);
+    }
+    
+    public void setTemperature(float temp){
+        inference_parameters.setTemperature(temp);
+    }
+    
+    public float getTemperature(){
+        return inference_parameters.getTemperature();
+    }
+    
+    public void setShouldPenalize(boolean penalize){
+        inference_parameters.setShouldPenalize(penalize);
+    }
+    
+    public boolean getShouldPenalize(){
+        return inference_parameters.getShouldPenalize();
+    }
+    
+    public String getFileModelPath(){
+        return model_parameters.getfileModelPath(); 
+    }
+    
+    public void setFileModelPath(String path){
+        model_parameters.setFileModelPath(path);
+    }
+    
+    public void setMiroStatVersion(MiroStat version){
+        
+        inference_parameters.setMiroStatVersion(version);
+        
+    }
+    
+    public MiroStat getMiroStatVersion(){
+        
+        return inference_parameters.getMiroStatVersion();
     }
     
     public static LLMParameters getInstance(){

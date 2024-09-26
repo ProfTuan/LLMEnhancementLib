@@ -18,6 +18,9 @@ public class LLMModelParameters {
     public LLMModelParameters(){
         LLMConfiguration config = LLMConfiguration.getInstance();
         
+        num_threads = config.getNumThreads();
+        layers = config.getLayers();
+        fileModelPath = config.getModelFilePath();
         
     }
     
