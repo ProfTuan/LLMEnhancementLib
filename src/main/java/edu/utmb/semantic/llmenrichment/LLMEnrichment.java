@@ -89,6 +89,8 @@ public class LLMEnrichment
     
     public void translateAxioms(Set<NLAxiomData> records){
         
+        String template_prompt = "You are a helpful assistant\n. User: Please translate the ontology axiom using natural langauge. The axiom type is: [axiom_type]. The axiom you need to translate is:  ";
+        
         modelParams = new ModelParameters();
         
         modelParams.setModelFilePath(llm_parameters.getFileModelPath());
