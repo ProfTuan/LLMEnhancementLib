@@ -27,6 +27,14 @@ public class LLMParameters  {
         
     }
     
+    public int getNPredict(){
+        return inference_parameters.getNumPredict();
+    }
+    
+    public void setNPredict(int value){
+        inference_parameters.setNumPredict(value);
+    }
+    
     public int getNThreads(){
         return model_parameters.NThreads();
     }

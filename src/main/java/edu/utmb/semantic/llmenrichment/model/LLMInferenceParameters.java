@@ -35,6 +35,14 @@ public class LLMInferenceParameters {
         
     }
     
+    public void setNumPredict(int value){
+        this.num_predict = value;
+    }
+    
+    public int getNumPredict(){
+        return num_predict;
+    }
+    
     public void setTemperature(float value){
         this.temperature = value;
     }

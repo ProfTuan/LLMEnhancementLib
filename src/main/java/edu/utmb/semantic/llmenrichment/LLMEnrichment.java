@@ -89,7 +89,7 @@ public class LLMEnrichment
     
     public void translateAxioms(Set<NLAxiomData> records){
         
-        String template_prompt = "You are a helpful assistant\n. User: Please translate the ontology axiom using natural langauge. The axiom type is: [axiom_type]. The axiom you need to translate is:  ";
+        final String template_prompt = "You are a helpful assistant\n. User: Please translate the ontology axiom using natural langauge. The axiom type is: [axiom_type]. The axiom you need to translate is:  [axiom] . Your translation for this axiom is (Just state your translation in one sentence. Do not add any other statements):";
         
         modelParams = new ModelParameters();
         
@@ -100,6 +100,27 @@ public class LLMEnrichment
         ArrayList<String> result_data = new ArrayList();
         
         try(LlamaModel model = new LlamaModel(modelParams)){
+            
+            for(NLAxiomData record: records){
+                
+                String prompt_temp = template_prompt
+                        .replaceAll("\\[axiom_type\\]", record.getAxiomType().toString())
+                        .replaceAll("\\[axiom\\]", record.getNLTranslation());
+                
+                
+                inferParams = new InferenceParameters(prompt_temp)
+                        .setTemperature(llm_parameters.getTemperature())
+                        .setPenalizeNl(llm_parameters.getShouldPenalize())
+                        .setMiroStat(llm_parameters.getMiroStatVersion())
+                        .setStopStrings("User:")
+                        .setNPredict(llm_parameters.getNPredict());
+                
+                StringBuilder results = new StringBuilder();
+                for(LlamaOutput output: model.generate(inferParams)){
+                    results.append(output);
+                }
+               
+            }
             
         }
         
