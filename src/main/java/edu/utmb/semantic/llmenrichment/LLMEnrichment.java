@@ -88,7 +88,7 @@ public class LLMEnrichment
 */
     
     public void translateAxioms(Set<NLAxiomData> records){
-        
+        StringBuilder results = new StringBuilder();
         final String template_prompt = "You are a helpful assistant\n. User: Please translate the ontology axiom using natural langauge. The axiom type is: [axiom_type]. The axiom you need to translate is:  [axiom] . Your translation for this axiom is (Just state your translation in one sentence. Do not add any other statements):";
         
         modelParams = new ModelParameters();
@@ -115,7 +115,7 @@ public class LLMEnrichment
                         .setStopStrings("User:")
                         .setNPredict(llm_parameters.getNPredict());
                 
-                StringBuilder results = new StringBuilder();
+                
                 for(LlamaOutput output: model.generate(inferParams)){
                     results.append(output);
                 }
@@ -123,6 +123,8 @@ public class LLMEnrichment
             }
             
         }
+        
+        System.out.println(results.toString());
         
     }
        
