@@ -97,7 +97,7 @@ public class LLMEnrichment
         modelParams.setNThreads(llm_parameters.getNThreads());
         modelParams.setNGpuLayers(llm_parameters.getNGpuLayers());
         
-        ArrayList<String> result_data = new ArrayList();
+        //ArrayList<String> result_data = new ArrayList();
         
         try(LlamaModel model = new LlamaModel(modelParams)){
             

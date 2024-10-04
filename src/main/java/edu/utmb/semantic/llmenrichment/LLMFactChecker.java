@@ -12,14 +12,20 @@ import de.kherud.llama.LlamaModel;
 import de.kherud.llama.LlamaOutput;
 import de.kherud.llama.ModelParameters;
 import de.kherud.llama.args.MiroStat;
+import edu.utmb.semantic.llmenrichment.model.LLMParameters;
+import edu.utmb.semantic.llmenrichment.model.NLAxiomData;
 import edu.utmb.semantic.llmenrichment.util.Reporter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 /**
  *
  * @author mac
  */
 public class LLMFactChecker {
+    
+    private LLMParameters llm_parameters = null;
+    
     private ModelParameters modelParams = null;
     private InferenceParameters inferParams = null;
     
@@ -41,6 +47,44 @@ public class LLMFactChecker {
     }
     
     public void setInferenceParamters(float temp, boolean penalize, MiroStat ms, String stop_string, int num_predict){
+        
+    }
+    
+    public void checkSentenceAccuracy(Set<NLAxiomData> records){
+        StringBuilder results = new StringBuilder();
+        
+        final String template_prompt = "You are a helpful assistant\n. User: Evaluate the accuracy of the ontology axiom's natural langauge translation. The axiom type is : [axiom_type]. The axiom is: [axiom]. Is the translation accurate? (Only answer Yes, No, or Don't know):";
+        
+        modelParams = new ModelParameters();
+        modelParams.setModelFilePath(llm_parameters.getFileModelPath());
+        modelParams.setNThreads(llm_parameters.getNThreads());
+        modelParams.setNGpuLayers(llm_parameters.getNGpuLayers());
+        
+        try (LlamaModel model = new LlamaModel(modelParams)) {
+            
+            for(NLAxiomData record : records){
+                
+                String prompt_temp = template_prompt
+                        .replaceAll("\\[axiom_type\\]", record.getAxiomType().toString())
+                        .replaceAll("\\[axiom\\]", record.getNLTranslation());
+                
+                inferParams = new InferenceParameters(prompt_temp)
+                        .setTemperature(llm_parameters.getTemperature())
+                        .setPenalizeNl(llm_parameters.getShouldPenalize())
+                        .setMiroStat(llm_parameters.getMiroStatVersion())
+                        .setStopStrings("User:")
+                        .setNPredict(llm_parameters.getNPredict());
+
+                
+                for(LlamaOutput output: model.generate(inferParams)){
+                    results.append(output);
+                }
+                
+            }
+            
+        }
+        
+        System.out.println(results.toString());
         
     }
     
