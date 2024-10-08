@@ -18,6 +18,8 @@ import edu.utmb.semantic.llmenrichment.util.Reporter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author mac
@@ -47,6 +49,21 @@ public class LLMFactChecker {
     }
     
     public void setInferenceParamters(float temp, boolean penalize, MiroStat ms, String stop_string, int num_predict){
+        
+    }
+    
+    public void downloadAndSetModelPath(String fileURL, String saveDir){
+        
+        
+        try {
+            LLMManagement.downloadFile(fileURL, saveDir);
+        } catch (IOException ex) {
+            Logger.getLogger(LLMFactChecker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(LLMFactChecker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        this.model_path = saveDir;
         
     }
     
@@ -88,6 +105,8 @@ public class LLMFactChecker {
         
     }
     
+    
+    //Previous versions
     public void factchecking(String sourcepath, String targetpath, String modelpath) throws IOException {
         llmReporter = Reporter.getInstance();
         List<String[]> records = llmReporter.readcsv(sourcepath);

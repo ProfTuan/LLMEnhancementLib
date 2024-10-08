@@ -127,7 +127,8 @@ public class LLMEnrichment
         System.out.println(results.toString());
         
     }
-       
+    
+    //PREVIOUS VERSION
     public void inference(String sourcepath, String targetpath, String modelpath) throws IOException {
         llmReporter = Reporter.getInstance();
         List<String[]> records = llmReporter.readcsv(sourcepath);
