@@ -6,9 +6,12 @@ package edu.utmb.semantic.llmenrichment;
 
 /**
  *
- * @author mac
+ * @author tuan
  */
 public class LLMAdapter {
+    
+    private LLMEnrichment llm_enrichiment;
+    private LLMFactChecker llm_fact_checker;
     
     public LLMAdapter(){
         

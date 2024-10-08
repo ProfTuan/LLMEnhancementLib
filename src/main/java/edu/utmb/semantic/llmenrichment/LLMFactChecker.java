@@ -56,7 +56,7 @@ public class LLMFactChecker {
         
         
         try {
-            LLMManagement.downloadFile(fileURL, saveDir);
+            LLMManagement.getInstance().downloadFile(fileURL, saveDir);
         } catch (IOException ex) {
             Logger.getLogger(LLMFactChecker.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {

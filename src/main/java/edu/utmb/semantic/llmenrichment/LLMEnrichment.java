@@ -15,6 +15,8 @@ import edu.utmb.semantic.llmenrichment.util.Reporter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //@SuppressWarnings("InfiniteLoopStatement")
 public class LLMEnrichment 
@@ -69,9 +71,15 @@ public class LLMEnrichment
         
     }
     
-    public void downloadAndSetModelPath(String fileURL, String saveDir) throws IOException, InterruptedException {
-        // Use LLMManagement to download the model
-        LLMManagement.downloadFile(fileURL, saveDir);
+    public void downloadAndSetModelPath(String fileURL, String saveDir)  {
+       try {
+           // Use LLMManagement to download the model
+           LLMManagement.getInstance().downloadFile(fileURL, saveDir);
+       } catch (IOException ex) {
+           Logger.getLogger(LLMEnrichment.class.getName()).log(Level.SEVERE, null, ex);
+       } catch (InterruptedException ex) {
+           Logger.getLogger(LLMEnrichment.class.getName()).log(Level.SEVERE, null, ex);
+       }
         // Set the downloaded model's path as the model_path
         this.model_path = saveDir;
     }

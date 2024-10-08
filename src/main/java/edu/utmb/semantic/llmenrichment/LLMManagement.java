@@ -19,7 +19,25 @@ import java.util.Scanner;
  * @author mac
  */
 public class LLMManagement {
-    public static void downloadFile(String fileURL, String saveDir) throws IOException, InterruptedException {
+    
+    static private LLMManagement INSTANCE = null;
+    
+    private LLMManagement(){
+        
+    }
+    
+    
+    static public LLMManagement getInstance(){
+        
+        if(INSTANCE == null){
+            INSTANCE = new LLMManagement();
+        }
+        
+        return INSTANCE;
+        
+    }
+    
+    public void downloadFile(String fileURL, String saveDir) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newBuilder()
                 .followRedirects(HttpClient.Redirect.ALWAYS) // Automatically follow redirects
                 .build();
@@ -54,7 +72,7 @@ public class LLMManagement {
         }
     }
 
-    private static String progressBar(int progress) {
+    private String progressBar(int progress) {
         int totalBars = 50; // The length of the progress bar
         int bars = (progress * totalBars) / 100;
         return "=".repeat(bars) + " ".repeat(totalBars - bars);
@@ -74,6 +92,9 @@ public class LLMManagement {
     */
     
     public static void main(String[] args) {
+        
+        LLMManagement llmmanagement = new LLMManagement();
+        
         // List of URLs to present to the user
         String[] urls = {
             "https://huggingface.co/TheBloke/CodeLlama-7B-GGUF/resolve/main/codellama-7b.Q2_K.gguf",
@@ -114,7 +135,7 @@ public class LLMManagement {
 
         // Download the file
         try {
-            downloadFile(fileURL, saveDir);
+            llmmanagement.downloadFile(fileURL, saveDir);
             System.out.println("Model downloading from: " + fileURL);
             System.out.println("Model downloaded to: " + saveDir);
         } catch (IOException | InterruptedException e) {
