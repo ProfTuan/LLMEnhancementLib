@@ -22,11 +22,12 @@ public class LLMAdapter {
         
         llm_enrichment = new LLMEnrichment();
         llm_fact_checker = new LLMFactChecker();
+             
     }
     
     public void executeFactChecking(Set<NLAxiomData> records){
         
-        
+        llm_management = LLMManagement.getInstance();
         //set up parameter
         
         //execute
@@ -35,6 +36,8 @@ public class LLMAdapter {
     }
     
     public void executeLLMEnhancement(Set<NLAxiomData> records){
+        
+        llm_management = LLMManagement.getInstance();
         //set up parameters
         
         //execute
