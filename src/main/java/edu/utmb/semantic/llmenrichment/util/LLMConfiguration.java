@@ -8,9 +8,16 @@ import de.kherud.llama.args.MiroStat;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -20,15 +27,19 @@ public class LLMConfiguration {
     
     private final String propertyFile = "llm.properties";
     
+    private final String modelsFile = "models.csv";
+    
     private static LLMConfiguration INSTANCE = null;
     
     private String configPath;
+    
+    private String rootPath;
     
     private Properties property;
     
     private LLMConfiguration(){
         
-        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
         
         configPath = rootPath + propertyFile;
         
@@ -49,6 +60,43 @@ public class LLMConfiguration {
         
         return INSTANCE;
         
+    }
+    
+    public Map<String, String> collectLLMList() {
+
+        Map<String, String> collect_llm_list = new HashMap<String, String>();
+
+        String pathToLLM = rootPath.toString() + modelsFile;
+        try {
+            Stream<String> lines = Files.lines(Paths.get(pathToLLM));
+
+            //lines.map(line->)
+            Set<String> setList = lines.collect(Collectors.toSet());
+
+            boolean isHeader = true;
+
+            for (String line : setList) {
+
+                String[] s_line = line.split(",");
+
+                if (isHeader == false) {
+                    String name = s_line[0];
+                    String url = s_line[1];
+
+                    collect_llm_list.put(name, url);
+                } else {
+                    isHeader = false;
+                }
+
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(LLMConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        return collect_llm_list;
+
     }
     
     

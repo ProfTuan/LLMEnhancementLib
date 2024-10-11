@@ -4,6 +4,7 @@
  */
 package edu.utmb.semantic.llmenrichment;
 
+import edu.utmb.semantic.llmenrichment.util.LLMConfiguration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.FileOutputStream;
@@ -11,8 +12,12 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,11 +27,24 @@ public class LLMManagement {
     
     static private LLMManagement INSTANCE = null;
     
+    private Map<String, String> url_models = null;
+    
+    private String userDirectory = "";
+    
     private LLMManagement(){
+        
+        url_models = new HashMap<String,String>();
         
     }
     
     
+    public void setUserDirectory(String selectedDirectory){
+        
+        userDirectory = selectedDirectory;
+        
+        
+    }
+
     static public LLMManagement getInstance(){
         
         if(INSTANCE == null){
@@ -35,6 +53,73 @@ public class LLMManagement {
         
         return INSTANCE;
         
+    }
+    
+    public void addURLForModels(String name, String url){
+        
+        url_models.put(name, url);
+        
+    }
+    
+    
+    public String getSelectedURLModel(String name){
+        
+        String selected = "";
+        
+        selected = url_models.get(name);
+        
+        return selected;
+    }
+    
+    public void intializeURLModels(){
+        
+        url_models.putAll(LLMConfiguration.getInstance().collectLLMList());
+        
+    }
+    
+    public void downloadFile(String fileURL) {
+
+        try {
+            HttpClient client = HttpClient.newBuilder()
+                    .followRedirects(HttpClient.Redirect.ALWAYS) // Automatically follow redirects
+                    .build();
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(fileURL))
+                    .build();
+
+            HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+
+            int statusCode = response.statusCode();
+
+            if (statusCode == 200) {
+
+                long contentLength = Long.parseLong(response.headers().firstValue("Content-Length").orElse("0"));
+                try (InputStream inputStream = response.body(); FileOutputStream outputStream = new FileOutputStream(this.userDirectory)) {
+
+                    byte[] buffer = new byte[4096];
+                    long totalBytesRead = 0;
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                        totalBytesRead += bytesRead;
+
+                        // Calculate and display progress
+                        int progress = (int) (totalBytesRead * 100 / contentLength);
+                        System.out.print("\r" + "Downloaded " + progress + "% [" + progressBar(progress) + "]");
+                    }
+                    System.out.println("\nDownload complete.");
+
+                }
+
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(LLMManagement.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(LLMManagement.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
     
     public void downloadFile(String fileURL, String saveDir) throws IOException, InterruptedException {
