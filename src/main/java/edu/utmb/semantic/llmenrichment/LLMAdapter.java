@@ -25,6 +25,10 @@ public class LLMAdapter {
              
     }
     
+    public void retrieveLLMModel(){
+        
+    }
+    
     public void executeFactChecking(Set<NLAxiomData> records){
         
         llm_management = LLMManagement.getInstance();

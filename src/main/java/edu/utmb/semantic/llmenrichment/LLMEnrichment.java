@@ -125,6 +125,7 @@ public class LLMEnrichment
                 
                 
                 for(LlamaOutput output: model.generate(inferParams)){
+                    System.out.println(output);
                     results.append(output);
                 }
                

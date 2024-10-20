@@ -94,6 +94,7 @@ public class LLMFactChecker {
 
                 
                 for(LlamaOutput output: model.generate(inferParams)){
+                    System.out.println(output);
                     results.append(output);
                 }
                 
