@@ -108,6 +108,7 @@ public class LLMFactChecker {
     
     
     //Previous versions
+    @Deprecated
     public void factchecking(String sourcepath, String targetpath, String modelpath) throws IOException {
         llmReporter = Reporter.getInstance();
         List<String[]> records = llmReporter.readcsv(sourcepath);

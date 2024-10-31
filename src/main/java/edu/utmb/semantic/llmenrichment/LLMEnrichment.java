@@ -138,6 +138,7 @@ public class LLMEnrichment
     }
     
     //PREVIOUS VERSION
+    @Deprecated
     public void inference(String sourcepath, String targetpath, String modelpath) throws IOException {
         llmReporter = Reporter.getInstance();
         List<String[]> records = llmReporter.readcsv(sourcepath);
