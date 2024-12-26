@@ -5,9 +5,14 @@
 package edu.utmb.semantic.llmenrichment.util;
 
 import de.kherud.llama.args.MiroStat;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -35,16 +40,23 @@ public class LLMConfiguration {
     
     private String rootPath;
     
-    private Properties property;
+    private Properties property = new Properties();
     
     private LLMConfiguration(){
         
-        rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
         
-        configPath = rootPath + propertyFile;
+        //File resource = new ClassPathResource("data/employees.dat").getFile();
+        InputStream i_stream = ClassLoader.getSystemClassLoader().getResourceAsStream(propertyFile);
+        
+        
+        
+        //rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        
+        //configPath = rootPath + propertyFile;
         
         try {
-            property.load(new FileInputStream(configPath));
+            property.load(i_stream);
+            //property.load(new FileInputStream(configPath));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(LLMConfiguration.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -63,29 +75,25 @@ public class LLMConfiguration {
     }
     
     public Map<String, String> collectLLMList() {
-
         Map<String, String> collect_llm_list = new HashMap<String, String>();
 
-        String pathToLLM = rootPath.toString() + modelsFile;
+        InputStream i_stream = ClassLoader.getSystemClassLoader().getResourceAsStream(modelsFile);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(i_stream));
+        boolean header = true;
+        String line_read;
         try {
-            Stream<String> lines = Files.lines(Paths.get(pathToLLM));
 
-            //lines.map(line->)
-            Set<String> setList = lines.collect(Collectors.toSet());
+            while ((line_read = reader.readLine()) != null) {
 
-            boolean isHeader = true;
-
-            for (String line : setList) {
-
-                String[] s_line = line.split(",");
-
-                if (isHeader == false) {
-                    String name = s_line[0];
-                    String url = s_line[1];
+                if (header == true) {
+                    header = false;
+                } else {
+                    String[] split = line_read.split(",");
+                    String name = split[0];
+                    String url = split[1];
 
                     collect_llm_list.put(name, url);
-                } else {
-                    isHeader = false;
                 }
 
             }
@@ -93,7 +101,8 @@ public class LLMConfiguration {
         } catch (IOException ex) {
             Logger.getLogger(LLMConfiguration.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
+    
         
         return collect_llm_list;
 

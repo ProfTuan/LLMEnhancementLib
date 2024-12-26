@@ -62,7 +62,12 @@
             <artifactId>llama</artifactId>
             <version>3.2.1</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.12.0</version>
+        </dependency>
+        
     
     </dependencies>
 
