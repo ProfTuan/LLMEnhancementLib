@@ -45,15 +45,9 @@ public class LLMConfiguration {
     private LLMConfiguration(){
         
         
-        //File resource = new ClassPathResource("data/employees.dat").getFile();
         InputStream i_stream = ClassLoader.getSystemClassLoader().getResourceAsStream(propertyFile);
         
-        
-        
-        //rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-        
-        //configPath = rootPath + propertyFile;
-        
+       
         try {
             property.load(i_stream);
             //property.load(new FileInputStream(configPath));
