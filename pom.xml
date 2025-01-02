@@ -6,7 +6,7 @@
 
     <groupId>edu.utmb.semantic</groupId>
     <artifactId>LLMEnrichment</artifactId>
-    <version>0.01</version>
+    <version>0.50</version>
 
     <name>LLMEnrichment</name>
     <!-- FIXME change it to the project's website -->
