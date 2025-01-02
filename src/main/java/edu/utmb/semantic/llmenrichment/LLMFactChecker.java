@@ -67,6 +67,17 @@ public class LLMFactChecker {
         
     }
     
+    public String checkSentenceAccuracy(String sentence){
+        
+        final String template_prompt = "You are a helpful assistant\n. User: Evaluate the accuracy of the ontology axiom's natural langauge translation. The axiom type is : [axiom_type]. The axiom is: [axiom]. Is the translation accurate? (Only answer Yes, No, or Don't know):";
+        
+        modelParams = new ModelParameters();
+        
+        
+        return null;
+    }
+    
+    
     public void checkSentenceAccuracy(Set<NLAxiomData> records){
         StringBuilder results = new StringBuilder();
         

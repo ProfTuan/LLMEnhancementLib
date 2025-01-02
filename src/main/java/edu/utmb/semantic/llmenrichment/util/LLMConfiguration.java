@@ -6,48 +6,46 @@ package edu.utmb.semantic.llmenrichment.util;
 
 import de.kherud.llama.args.MiroStat;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  *
  * @author mac
  */
 public class LLMConfiguration {
-    
+
+    private int threads;
+    private int layers;
+    private float temperature;
+    private boolean penalize;
+    private int version;
+    private int predict;
+    private String modelPath;
+
     private final String propertyFile = "llm.properties";
-    
+
     private final String modelsFile = "models.csv";
-    
+
     private static LLMConfiguration INSTANCE = null;
-    
+
     private String configPath;
-    
+
     private String rootPath;
-    
+
     private Properties property = new Properties();
-    
-    private LLMConfiguration(){
-        
-        
+
+    private LLMConfiguration() {
+
         InputStream i_stream = ClassLoader.getSystemClassLoader().getResourceAsStream(propertyFile);
-        
-       
+
         try {
             property.load(i_stream);
             //property.load(new FileInputStream(configPath));
@@ -56,18 +54,20 @@ public class LLMConfiguration {
         } catch (IOException ex) {
             Logger.getLogger(LLMConfiguration.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        init();
     }
-    
-    public static LLMConfiguration getInstance(){
-        
-        if(INSTANCE == null){
+
+    public static LLMConfiguration getInstance() {
+
+        if (INSTANCE == null) {
             INSTANCE = new LLMConfiguration();
         }
-        
+
         return INSTANCE;
-        
+
     }
-    
+
     public Map<String, String> collectLLMList() {
         Map<String, String> collect_llm_list = new HashMap<String, String>();
 
@@ -96,80 +96,99 @@ public class LLMConfiguration {
             Logger.getLogger(LLMConfiguration.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    
-        
         return collect_llm_list;
 
     }
-    
-    
-    public int getNumThreads(){
-        
-        String value = property.getProperty("threads", "16");
-        
-        int threads = Integer.parseInt(value);
-        
+
+    private void init() {
+
+        threads = Integer.parseInt(property.getProperty("threads", "16"));
+
+        layers = Integer.parseInt(property.getProperty("layers", "43"));
+
+        temperature = Float.parseFloat(property.getProperty("temperature", "0.7f"));
+
+        penalize = Boolean.parseBoolean(property.getProperty("should_penalize", "true"));
+
+        version = Integer.parseInt(property.getProperty("mirostat_v"));
+
+        predict = Integer.parseInt(property.getProperty("predict", "30"));
+
+        modelPath = property.getProperty("file_path", "");
+
+    }
+
+    public int getNumThreads() {
+
         return threads;
-        
+
     }
     
-    public int getLayers(){
-        
-        String value = property.getProperty("layers", "43");
-        
-        int layers = Integer.parseInt(value);
-        
+    public void setNumThread(int value){
+        threads = value;
+    }
+
+    public int getLayers() {
+
         return layers;
     }
+
+    public void setLayers(int value){
+        layers = value;
+    }
     
-   public float getTemperature(){
-       
-       String value = property.getProperty("temperature", "0.7f");
-       
-       float temperature = Float.parseFloat(value);
-       
-       return temperature;
-       
-   }
+    public float getTemperature() {
+
+        return temperature;
+
+    }
     
-   public boolean getShouldPenalize(){
-       String value = property.getProperty("should_penalize", "true");
-       
-       boolean penalize = Boolean.parseBoolean(value);
-       
-       return penalize;
-   }
-   
-   public MiroStat getMiroStatType(){
-       
-       String value = property.getProperty("mirostat_v");
-       
-       int version = Integer.parseInt(value);
-       
-       if(version == 1){
-           
-           return MiroStat.V1;
-       }
-       else if (version ==2){
-           return MiroStat.V2;
-       }
-       else
-           return null;
-       
-   }
-   
-   public int predictNumber(){
-       String value = property.getProperty("predict", "30");
-       int predict = Integer.parseInt(value);
-       
-       return predict;
-   }
-   
-   public String getModelFilePath(){
-       
-       String value = property.getProperty("file_path", "");
-       
-       return value;
-   }
+    public void setTemperature(float value){
+        temperature = value;
+    }
+
+    public boolean getShouldPenalize() {
+
+        return penalize;
+    }
     
+    public void setShouldPenalize(boolean value){
+        penalize = value;
+    }
+
+    public MiroStat getMiroStatType() {
+
+        if (version == 1) {
+
+            return MiroStat.V1;
+        } else if (version == 2) {
+            return MiroStat.V2;
+        } else {
+            return null;
+        }
+
+    }
+    
+    public void setMiroStatType(int version_value){
+        version = version_value;
+    }
+
+    public int predictNumber() {
+
+        return predict;
+    }
+    
+    public void setPredictNumber(int value){
+        predict = value;
+    }
+
+    public String getModelFilePath() {
+
+        return this.modelPath;
+    }
+    
+    public void setModelFilePath(String path_value){
+        modelPath = path_value;
+    }
+
 }
