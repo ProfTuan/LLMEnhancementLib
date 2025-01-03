@@ -14,6 +14,7 @@ import de.kherud.llama.ModelParameters;
 import de.kherud.llama.args.MiroStat;
 import edu.utmb.semantic.llmenrichment.model.LLMParameters;
 import edu.utmb.semantic.llmenrichment.model.NLAxiomData;
+import edu.utmb.semantic.llmenrichment.util.LLMConfiguration;
 import edu.utmb.semantic.llmenrichment.util.Reporter;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,11 +68,27 @@ public class LLMFactChecker {
         
     }
     
-    public String checkSentenceAccuracy(String sentence){
+    public String checkSentenceAccuracy(NLAxiomData axiom_data){
         
         final String template_prompt = "You are a helpful assistant\n. User: Evaluate the accuracy of the ontology axiom's natural langauge translation. The axiom type is : [axiom_type]. The axiom is: [axiom]. Is the translation accurate? (Only answer Yes, No, or Don't know):";
         
         modelParams = new ModelParameters();
+        LLMConfiguration llmconfig = LLMConfiguration.getInstance();
+        
+        modelParams.setModelFilePath(llmconfig.getModelFilePath());
+        modelParams.setNThreads(llmconfig.getNumThreads());
+        modelParams.setNGpuLayers(llmconfig.getLayers());
+        
+        String prompt_temp = template_prompt
+                        .replaceAll("\\[axiom_type\\]", axiom_data.getAxiomType().toString())
+                       .replaceAll("\\[axiom\\]", axiom_data.getNLTranslation());
+        
+        inferParams = new InferenceParameters(prompt_temp)
+                        .setTemperature(llmconfig.getTemperature())
+                        .setPenalizeNl(llmconfig.getShouldPenalize())
+                        .setMiroStat(llmconfig.getMiroStatType())
+                        .setStopStrings("User:")
+                        .setNPredict(llmconfig.predictNumber());
         
         
         return null;
