@@ -10,6 +10,7 @@ import de.kherud.llama.ModelParameters;
 import de.kherud.llama.args.MiroStat;
 import edu.utmb.semantic.llmenrichment.model.LLMParameters;
 import edu.utmb.semantic.llmenrichment.model.NLAxiomData;
+import edu.utmb.semantic.llmenrichment.util.LLMConfiguration;
 
 import edu.utmb.semantic.llmenrichment.util.Reporter;
 import java.util.ArrayList;
@@ -94,7 +95,42 @@ public class LLMEnrichment
         }
     }
 */
-    
+  
+    public String translateAxiom(NLAxiomData nl_data){
+        
+        StringBuilder results = new StringBuilder();
+        
+        final String template_prompt = "You are a helpful assistant\n. User: Please translate the ontology axiom using natural langauge. The axiom type is: [axiom_type]. The axiom you need to translate is:  [axiom] . Your translation for this axiom is (Just state your translation in one sentence. Do not add any other statements):";
+        
+        modelParams = new ModelParameters();
+        LLMConfiguration llmconfig = LLMConfiguration.getInstance();
+        
+        modelParams.setModelFilePath(llmconfig.getModelFilePath());
+        modelParams.setNThreads(llmconfig.getNumThreads());
+        modelParams.setNGpuLayers(llmconfig.getLayers());
+        
+        LlamaModel model = new LlamaModel(modelParams);
+        
+        String prompt_temp = template_prompt
+                        .replaceAll("\\[axiom_type\\]", nl_data.getAxiomType().toString())
+                        .replaceAll("\\[axiom\\]", nl_data.getNLTranslation());
+        
+        inferParams = new InferenceParameters(prompt_temp)
+                        .setTemperature(llmconfig.getTemperature())
+                        .setPenalizeNl(llmconfig.getShouldPenalize())
+                        .setMiroStat(llmconfig.getMiroStatType())
+                        .setStopStrings("User:")
+                        .setNPredict(llmconfig.predictNumber());
+        
+        for(LlamaOutput output: model.generate(inferParams)){
+            System.out.println(output);
+            results.append(output);
+        }
+        
+        return results.toString();
+        
+    }
+            
     public void translateAxioms(Set<NLAxiomData> records){
         StringBuilder results = new StringBuilder();
         final String template_prompt = "You are a helpful assistant\n. User: Please translate the ontology axiom using natural langauge. The axiom type is: [axiom_type]. The axiom you need to translate is:  [axiom] . Your translation for this axiom is (Just state your translation in one sentence. Do not add any other statements):";

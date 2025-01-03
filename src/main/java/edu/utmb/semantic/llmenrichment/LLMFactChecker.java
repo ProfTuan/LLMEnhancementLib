@@ -70,6 +70,8 @@ public class LLMFactChecker {
     
     public String checkSentenceAccuracy(NLAxiomData axiom_data){
         
+        StringBuilder results = new StringBuilder();
+        
         final String template_prompt = "You are a helpful assistant\n. User: Evaluate the accuracy of the ontology axiom's natural langauge translation. The axiom type is : [axiom_type]. The axiom is: [axiom]. Is the translation accurate? (Only answer Yes, No, or Don't know):";
         
         modelParams = new ModelParameters();
@@ -78,6 +80,8 @@ public class LLMFactChecker {
         modelParams.setModelFilePath(llmconfig.getModelFilePath());
         modelParams.setNThreads(llmconfig.getNumThreads());
         modelParams.setNGpuLayers(llmconfig.getLayers());
+        
+        LlamaModel model = new LlamaModel(modelParams);
         
         String prompt_temp = template_prompt
                         .replaceAll("\\[axiom_type\\]", axiom_data.getAxiomType().toString())
@@ -91,7 +95,12 @@ public class LLMFactChecker {
                         .setNPredict(llmconfig.predictNumber());
         
         
-        return null;
+        for(LlamaOutput output: model.generate(inferParams)){
+                    System.out.println(output);
+                    results.append(output);
+                }
+        
+        return results.toString();
     }
     
     

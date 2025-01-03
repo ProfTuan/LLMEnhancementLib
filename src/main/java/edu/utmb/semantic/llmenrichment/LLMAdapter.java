@@ -29,6 +29,12 @@ public class LLMAdapter {
         
     }
     
+    public void excecuteFactChecking(NLAxiomData axiom_data){
+        llm_management = LLMManagement.getInstance();
+        
+        llm_fact_checker.checkSentenceAccuracy(axiom_data);
+    }
+    
     public void executeFactChecking(Set<NLAxiomData> records){
         
         llm_management = LLMManagement.getInstance();
@@ -37,6 +43,13 @@ public class LLMAdapter {
         //execute
         llm_fact_checker.checkSentenceAccuracy(records);
         
+    }
+    
+    public void executeLLMEnhancement(NLAxiomData axiom_data){
+        
+        llm_management = LLMManagement.getInstance();
+        
+        llm_enrichment.translateAxiom(axiom_data);
     }
     
     public void executeLLMEnhancement(Set<NLAxiomData> records){
