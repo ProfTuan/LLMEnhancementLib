@@ -96,7 +96,7 @@ public class LLMEnrichment
     }
 */
   
-    public String translateAxiom(NLAxiomData nl_data){
+    public String translateAxiom(String nl_string, String axiom_type){
         
         StringBuilder results = new StringBuilder();
         
@@ -112,8 +112,8 @@ public class LLMEnrichment
         LlamaModel model = new LlamaModel(modelParams);
         
         String prompt_temp = template_prompt
-                        .replaceAll("\\[axiom_type\\]", nl_data.getAxiomType().toString())
-                        .replaceAll("\\[axiom\\]", nl_data.getNLTranslation());
+                        .replaceAll("\\[axiom_type\\]", axiom_type)
+                        .replaceAll("\\[axiom\\]", nl_string);
         
         inferParams = new InferenceParameters(prompt_temp)
                         .setTemperature(llmconfig.getTemperature())

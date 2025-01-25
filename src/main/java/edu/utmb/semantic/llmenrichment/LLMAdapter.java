@@ -45,11 +45,11 @@ public class LLMAdapter {
         
     }
     
-    public void executeLLMEnhancement(NLAxiomData axiom_data){
+    public String executeLLMEnhancement(String nl_string, String axiom_type){
         
         llm_management = LLMManagement.getInstance();
         
-        llm_enrichment.translateAxiom(axiom_data);
+        return llm_enrichment.translateAxiom(nl_string, axiom_type);
     }
     
     public void executeLLMEnhancement(Set<NLAxiomData> records){
