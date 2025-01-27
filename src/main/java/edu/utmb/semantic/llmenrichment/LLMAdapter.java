@@ -29,10 +29,10 @@ public class LLMAdapter {
         
     }
     
-    public void excecuteFactChecking(NLAxiomData axiom_data){
+    public String excecuteFactChecking(String nl_string, String axiom_type){
         llm_management = LLMManagement.getInstance();
         
-        llm_fact_checker.checkSentenceAccuracy(axiom_data);
+        return llm_fact_checker.checkSentenceAccuracy(nl_string, axiom_type);
     }
     
     public void executeFactChecking(Set<NLAxiomData> records){

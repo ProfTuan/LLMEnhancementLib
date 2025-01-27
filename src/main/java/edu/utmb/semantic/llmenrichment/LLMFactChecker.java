@@ -68,7 +68,7 @@ public class LLMFactChecker {
         
     }
     
-    public String checkSentenceAccuracy(NLAxiomData axiom_data){
+    public String checkSentenceAccuracy(String nl_string, String axiom_type){
         
         StringBuilder results = new StringBuilder();
         
@@ -84,8 +84,8 @@ public class LLMFactChecker {
         LlamaModel model = new LlamaModel(modelParams);
         
         String prompt_temp = template_prompt
-                        .replaceAll("\\[axiom_type\\]", axiom_data.getAxiomType().toString())
-                       .replaceAll("\\[axiom\\]", axiom_data.getNLTranslation());
+                        .replaceAll("\\[axiom_type\\]", axiom_type)
+                       .replaceAll("\\[axiom\\]", nl_string);
         
         inferParams = new InferenceParameters(prompt_temp)
                         .setTemperature(llmconfig.getTemperature())
