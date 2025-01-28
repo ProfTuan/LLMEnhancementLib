@@ -16,6 +16,7 @@ public class NLAxiomData {
     private OWLAxiom axiom;
     private String natural_language_translation;
     private String llm_natural_language_translation;
+    private String llm_fact_information;
     
     public NLAxiomData(){
         
@@ -25,6 +26,14 @@ public class NLAxiomData {
         
         this.axiom = axiom;
         
+    }
+    
+    public void setFactInformation(String value){
+        this.llm_fact_information = value;
+    }
+    
+    public String getFactInformation(){
+        return this.llm_fact_information;
     }
     
     public void setNLTranslation(String natural_language){
