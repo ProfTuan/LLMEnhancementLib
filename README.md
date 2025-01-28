@@ -1,6 +1,7 @@
 <img src="https://forthebadge.com/images/badges/made-with-java.svg"/>
 
 <img src="https://img.shields.io/badge/apache%20netbeans-1B6AC6?style=for-the-badge&logo=apache%20netbeans%20IDE&logoColor=white"/>
+
 # LLM Enhancement library for Hootation
 
 ## Description
