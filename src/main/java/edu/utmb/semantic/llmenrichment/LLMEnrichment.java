@@ -96,6 +96,17 @@ public class LLMEnrichment
     }
 */
   
+    public void initModelParameters(){
+        
+        modelParams = new ModelParameters();
+        LLMConfiguration llmconfig = LLMConfiguration.getInstance();
+        
+        modelParams.setModelFilePath(llmconfig.getModelFilePath());
+        modelParams.setNThreads(llmconfig.getNumThreads());
+        modelParams.setNGpuLayers(llmconfig.getLayers());
+        
+    }
+    
     public String translateAxiom(String nl_string, String axiom_type){
         
         StringBuilder results = new StringBuilder();

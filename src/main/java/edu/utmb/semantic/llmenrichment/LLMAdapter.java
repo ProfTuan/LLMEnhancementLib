@@ -45,6 +45,14 @@ public class LLMAdapter {
         
     }
     
+    public void initializeLLMModelEnrichement(){
+        llm_enrichment.initModelParameters();
+    }
+    
+    public void initializeLLMModelFactChecker(){
+        llm_fact_checker.initModelParameters();
+    }
+    
     public String executeLLMEnhancement(String nl_string, String axiom_type){
         
         llm_management = LLMManagement.getInstance();

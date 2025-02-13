@@ -68,6 +68,18 @@ public class LLMFactChecker {
         
     }
     
+    public void initModelParameters(){
+        
+        
+        modelParams = new ModelParameters();
+        LLMConfiguration llmconfig = LLMConfiguration.getInstance();
+        
+        modelParams.setModelFilePath(llmconfig.getModelFilePath());
+        modelParams.setNThreads(llmconfig.getNumThreads());
+        modelParams.setNGpuLayers(llmconfig.getLayers());
+        
+    }
+    
     public String checkSentenceAccuracy(String nl_string, String axiom_type){
         
         StringBuilder results = new StringBuilder();
