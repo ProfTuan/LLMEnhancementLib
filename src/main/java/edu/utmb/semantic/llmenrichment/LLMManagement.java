@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -121,6 +123,53 @@ public class LLMManagement {
         }
 
     }
+    
+
+    //JTextArea
+    public void downloadFile(String fileURL, String saveDir, JTextArea panelOutput){
+        try {
+            HttpClient client = HttpClient.newBuilder()
+                    .followRedirects(HttpClient.Redirect.ALWAYS) // Automatically follow redirects
+                    .build();
+            
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(fileURL))
+                    .build();
+            
+            HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+            
+            int statusCode = response.statusCode();
+            if (statusCode == 200) {
+                long contentLength = Long.parseLong(response.headers().firstValue("Content-Length").orElse("0"));
+                try (InputStream inputStream = response.body();
+                        FileOutputStream outputStream = new FileOutputStream(saveDir)) {
+                    
+                    byte[] buffer = new byte[4096];
+                    long totalBytesRead = 0;
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                        totalBytesRead += bytesRead;
+                        
+                        // Calculate and display progress
+                        int progress = (int) (totalBytesRead * 100 / contentLength);
+                        //System.out.print("\r" + "Downloaded " + progress + "% [" + progressBar(progress) + "]");
+                        panelOutput.setText("\r" + "Downloaded " + progress + "% [" + progressBar(progress) + "]");
+                    }
+                    //System.out.println("\nDownload complete.");
+                    panelOutput.setText("\nDownload complete.");
+                }
+            } else {
+                //System.out.println("Failed to download file. HTTP status code: " + statusCode);
+                panelOutput.setText("Failed to download file. HTTP status code: " + statusCode);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(LLMManagement.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(LLMManagement.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     
     public void downloadFile(String fileURL, String saveDir) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newBuilder()

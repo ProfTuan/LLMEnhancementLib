@@ -6,6 +6,7 @@ package edu.utmb.semantic.llmenrichment;
 
 import edu.utmb.semantic.llmenrichment.model.NLAxiomData;
 import java.util.Set;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -13,20 +14,41 @@ import java.util.Set;
  */
 public class LLMAdapter {
     
+    private static LLMAdapter INSTANCE = null;
+    
     private LLMEnrichment llm_enrichment;
     private LLMFactChecker llm_fact_checker;
     private LLMManagement llm_management;
     
     
-    public LLMAdapter(){
+    public synchronized static LLMAdapter getInstance(){
         
-        llm_enrichment = new LLMEnrichment();
-        llm_fact_checker = new LLMFactChecker();
+        if(INSTANCE == null){
+            
+            INSTANCE = new LLMAdapter();
+            
+        }
+        
+        
+        return INSTANCE;
+    }
+    
+    
+    private LLMAdapter(){
+        
+        init();
              
     }
     
-    public void retrieveLLMModel(){
+    private void init(){
+        llm_enrichment = new LLMEnrichment();
+        llm_fact_checker = new LLMFactChecker();
+    }
+    
+    public void retrieveLLMModel(String file_url, String save_dir, JTextArea panelOutput){
+        llm_management = LLMManagement.getInstance();
         
+        llm_management.downloadFile(file_url, save_dir, panelOutput);
     }
     
     public String excecuteFactChecking(String nl_string, String axiom_type){
