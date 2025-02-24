@@ -5,6 +5,7 @@
 package edu.utmb.semantic.llmenrichment;
 
 import edu.utmb.semantic.llmenrichment.util.LLMConfiguration;
+import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -129,69 +130,93 @@ public class LLMManagement {
     }
     
     
+    private void openDefaultBrowser(URI uri)  {
+        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+            // windows
+            Desktop desktop = Desktop.getDesktop();
+            try {
+                desktop.browse(uri);
+            } catch (IOException e) {
+                
+            }
+        } else {
+            // linux / mac
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                runtime.exec("xdg-open " + uri.toString());
+            } catch (IOException e) {
+                
+            }
+        }
+    }
+    
+    
 
     //JTextArea
     public void downloadFile(String fileURL, String saveDir, JTextArea panelOutput){
         
+        //URI uri = URI.create(fileURL);
+        
+        //openDefaultBrowser(uri);
+        
+        /*
+        File llm_download = File.createTempFile(saveDir + "llm", ".tmp");
+        
+        Connection conn = Jsoup.connect(fileURL).timeout(300000).header("Cache-Control", "max-age=0")
+        .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36")
+        .referrer("http://www.google.com").ignoreContentType(true);
+        
+        Connection.Response response = conn.execute();
+        BufferedInputStream bodyStream = response.bodyStream();
+        
+        panelOutput.append("\nSaving the file to " + llm_download.getAbsolutePath());
+        panelOutput.append("\nDownloading....");
+        java.nio.file.Files.copy(bodyStream, llm_download.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        
+        panelOutput.append("\nSaving the file to " + llm_download.getAbsolutePath());
+        */
+        //Files.copy(bodyStream, llm_download.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        
+        
         try {
-            File llm_download = File.createTempFile(saveDir + "llm", ".tmp");
-            
-            Connection conn = Jsoup.connect(fileURL).timeout(300000).header("Cache-Control", "max-age=0")
-                    .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36")
-                    .referrer("http://www.google.com").ignoreContentType(true);
-            
-            Connection.Response response = conn.execute();
-            BufferedInputStream bodyStream = response.bodyStream();
-            
-            java.nio.file.Files.copy(bodyStream, llm_download.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            
-            panelOutput.append("\nSaving the file to " + llm_download.getAbsolutePath());
-            
-            //Files.copy(bodyStream, llm_download.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            
-            /*
-            try {
             HttpClient client = HttpClient.newBuilder()
-            .followRedirects(HttpClient.Redirect.ALWAYS) // Automatically follow redirects
-            .build();
+                    .followRedirects(HttpClient.Redirect.ALWAYS) // Automatically follow redirects
+                    .build();
             
             HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(fileURL))
-            .build();
+                    .uri(URI.create(fileURL))
+                    .build();
             
             HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
             
             int statusCode = response.statusCode();
             if (statusCode == 200) {
-            long contentLength = Long.parseLong(response.headers().firstValue("Content-Length").orElse("0"));
-            try (InputStream inputStream = response.body();
-            FileOutputStream outputStream = new FileOutputStream(saveDir)) {
-            
-            byte[] buffer = new byte[4096];
-            long totalBytesRead = 0;
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, bytesRead);
-            totalBytesRead += bytesRead;
-            
-            // Calculate and display progress
-            int progress = (int) (totalBytesRead * 100 / contentLength);
-            
-            panelOutput.setText("\r" + "Downloaded " + progress + "% [" + progressBar(progress) + "]");
-            }
-            
-            panelOutput.setText("\nDownload complete.");
-            }
+                long contentLength = Long.parseLong(response.headers().firstValue("Content-Length").orElse("0"));
+                try (InputStream inputStream = response.body();
+                        FileOutputStream outputStream = new FileOutputStream(saveDir)) {
+                    
+                    byte[] buffer = new byte[4096];
+                    long totalBytesRead = 0;
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                        totalBytesRead += bytesRead;
+                        
+                        // Calculate and display progress
+                        int progress = (int) (totalBytesRead * 100 / contentLength);
+                        
+                        panelOutput.setText("\r" + "Downloaded " + progress + "% [" + progressBar(progress) + "]");
+                    }
+                    
+                    panelOutput.setText("\nDownload complete.");
+                }
             } else {
-            
-            panelOutput.setText("Failed to download file. HTTP status code: " + statusCode);
+                
+                panelOutput.setText("Failed to download file. HTTP status code: " + statusCode);
             }
-            } catch (IOException ex) {
-            Logger.getLogger(LLMManagement.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InterruptedException ex) {
-            Logger.getLogger(LLMManagement.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
         } catch (IOException ex) {
+            Logger.getLogger(LLMManagement.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
             Logger.getLogger(LLMManagement.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
