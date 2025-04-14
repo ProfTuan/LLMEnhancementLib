@@ -89,20 +89,41 @@ public class LLMFactChecker {
         
         StringBuilder results = new StringBuilder();
         
-        final String template_prompt = "You are a helpful assistant\n. User: Evaluate the accuracy of the ontology axiom's natural langauge translation. The axiom type is : [axiom_type]. The axiom is: [axiom]. Is the translation accurate? (Only answer Yes, No, or Don't know):";
-        
-        modelParams = new ModelParameters();
+        final String template_prompt = "You are a helpful assistant\n. User: Evaluate the accuracy of the statement. The axiom type is : [axiom_type]. The axiom is: [axiom]. Is the translation accurate? (Only answer Yes, No, or Don't know):";
         LLMConfiguration llmconfig = LLMConfiguration.getInstance();
+        /*modelParams = new ModelParameters();
+        
         
         modelParams.setModel(llmconfig.getModelFilePath());
         modelParams.setThreads(llmconfig.getNumThreads());
-        modelParams.setGpuLayers(llmconfig.getLayers());
+        modelParams.setGpuLayers(llmconfig.getLayers());*/
         
         //modelParams.setModelFilePath(llmconfig.getModelFilePath());
         //modelParams.setNThreads(llmconfig.getNumThreads());
         //modelParams.setNGpuLayers(llmconfig.getLayers());
         
-        LlamaModel model = new LlamaModel(modelParams);
+        try (LlamaModel model = new LlamaModel(modelParams)) {
+
+            String prompt_temp = template_prompt
+                    .replaceAll("\\[axiom_type\\]", axiom_type)
+                    .replaceAll("\\[axiom\\]", nl_string);
+
+            inferParams = new InferenceParameters(prompt_temp)
+                    .setTemperature(llmconfig.getTemperature())
+                    .setPenalizeNl(llmconfig.getShouldPenalize())
+                    .setMiroStat(llmconfig.getMiroStatType())
+                    .setStopStrings("User:")
+                    .setNPredict(llmconfig.predictNumber());
+
+            for (LlamaOutput output : model.generate(inferParams)) {
+                System.out.println(output);
+                results.append(output);
+            }
+
+        }
+        
+        
+        /*LlamaModel model = new LlamaModel(modelParams);
         
         String prompt_temp = template_prompt
                         .replaceAll("\\[axiom_type\\]", axiom_type)
@@ -119,13 +140,13 @@ public class LLMFactChecker {
         for(LlamaOutput output: model.generate(inferParams)){
                     System.out.println(output);
                     results.append(output);
-                }
+                }*/
         
         return results.toString();
     }
     
     
-    public void checkSentenceAccuracy(Set<NLAxiomData> records){
+    public void checkSentenceAccuracy(ArrayList<NLAxiomData> records){
         StringBuilder results = new StringBuilder();
         
         final String template_prompt = "You are a helpful assistant\n. User: Evaluate the accuracy of the ontology axiom's natural langauge translation. The axiom type is : [axiom_type]. The axiom is: [axiom]. Is the translation accurate? (Only answer Yes, No, or Don't know):";

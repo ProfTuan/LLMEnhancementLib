@@ -4,7 +4,9 @@
  */
 package edu.utmb.semantic.llmenrichment;
 
+import de.kherud.llama.ModelParameters;
 import edu.utmb.semantic.llmenrichment.model.NLAxiomData;
+import java.util.ArrayList;
 import java.util.Set;
 import javax.swing.JTextArea;
 
@@ -20,6 +22,7 @@ public class LLMAdapter {
     private LLMFactChecker llm_fact_checker;
     private LLMManagement llm_management;
     
+    private ModelParameters modelParams = null;
     
     public synchronized static LLMAdapter getInstance(){
         
@@ -40,9 +43,15 @@ public class LLMAdapter {
              
     }
     
+    private void initializeModelParameters(){
+        
+    }
+    
     private void init(){
         llm_enrichment = new LLMEnrichment();
         llm_fact_checker = new LLMFactChecker();
+        
+        llm_fact_checker.initModelParameters();
     }
     
     public void retrieveLLMModel(String file_url, String save_dir, JTextArea panelOutput){
@@ -54,10 +63,12 @@ public class LLMAdapter {
     public String excecuteFactChecking(String nl_string, String axiom_type){
         llm_management = LLMManagement.getInstance();
         
+        
+        
         return llm_fact_checker.checkSentenceAccuracy(nl_string, axiom_type);
     }
     
-    public void executeFactChecking(Set<NLAxiomData> records){
+    public void executeFactChecking(ArrayList<NLAxiomData> records){
         
         llm_management = LLMManagement.getInstance();
         //set up parameter
@@ -82,7 +93,7 @@ public class LLMAdapter {
         return llm_enrichment.translateAxiom(nl_string, axiom_type);
     }
     
-    public void executeLLMEnhancement(Set<NLAxiomData> records){
+    public void executeLLMEnhancement(ArrayList<NLAxiomData> records){
         
         llm_management = LLMManagement.getInstance();
         //set up parameters
