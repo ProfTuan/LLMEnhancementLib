@@ -2,7 +2,11 @@
 
 <img src="https://img.shields.io/badge/apache%20netbeans-1B6AC6?style=for-the-badge&logo=apache%20netbeans%20IDE&logoColor=white"/>
 
-# LLM Enhancement library for Hootation
+# LLM Enhancement library for Hootation (DEPRECATED)
+
+## Note
+
+*The code from this repository has been integrated with Hootation and this repository is no longer updated. See Hootation for any code updates.*
 
 ## Description
 
