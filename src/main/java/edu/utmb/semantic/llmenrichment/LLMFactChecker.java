@@ -5,13 +5,14 @@
 package edu.utmb.semantic.llmenrichment;
 
 
-import java.io.IOException;
-
 import de.kherud.llama.InferenceParameters;
 import de.kherud.llama.LlamaModel;
 import de.kherud.llama.LlamaOutput;
 import de.kherud.llama.ModelParameters;
 import de.kherud.llama.args.MiroStat;
+import java.io.IOException;
+
+
 import edu.utmb.semantic.llmenrichment.model.LLMParameters;
 import edu.utmb.semantic.llmenrichment.model.NLAxiomData;
 import edu.utmb.semantic.llmenrichment.util.LLMConfiguration;
@@ -74,9 +75,13 @@ public class LLMFactChecker {
         modelParams = new ModelParameters();
         LLMConfiguration llmconfig = LLMConfiguration.getInstance();
         
-        modelParams.setModelFilePath(llmconfig.getModelFilePath());
-        modelParams.setNThreads(llmconfig.getNumThreads());
-        modelParams.setNGpuLayers(llmconfig.getLayers());
+        modelParams.setModel(llmconfig.getModelFilePath());
+        modelParams.setThreads(llmconfig.getNumThreads());
+        modelParams.setGpuLayers(llmconfig.getLayers());
+        
+        //modelParams.setModelFilePath(llmconfig.getModelFilePath());
+        //modelParams.setNThreads(llmconfig.getNumThreads());
+        //modelParams.setNGpuLayers(llmconfig.getLayers());
         
     }
     
@@ -89,9 +94,13 @@ public class LLMFactChecker {
         modelParams = new ModelParameters();
         LLMConfiguration llmconfig = LLMConfiguration.getInstance();
         
-        modelParams.setModelFilePath(llmconfig.getModelFilePath());
-        modelParams.setNThreads(llmconfig.getNumThreads());
-        modelParams.setNGpuLayers(llmconfig.getLayers());
+        modelParams.setModel(llmconfig.getModelFilePath());
+        modelParams.setThreads(llmconfig.getNumThreads());
+        modelParams.setGpuLayers(llmconfig.getLayers());
+        
+        //modelParams.setModelFilePath(llmconfig.getModelFilePath());
+        //modelParams.setNThreads(llmconfig.getNumThreads());
+        //modelParams.setNGpuLayers(llmconfig.getLayers());
         
         LlamaModel model = new LlamaModel(modelParams);
         
@@ -122,9 +131,13 @@ public class LLMFactChecker {
         final String template_prompt = "You are a helpful assistant\n. User: Evaluate the accuracy of the ontology axiom's natural langauge translation. The axiom type is : [axiom_type]. The axiom is: [axiom]. Is the translation accurate? (Only answer Yes, No, or Don't know):";
         
         modelParams = new ModelParameters();
-        modelParams.setModelFilePath(llm_parameters.getFileModelPath());
+        modelParams.setModel(llm_parameters.getFileModelPath());
+        modelParams.setThreads(llm_parameters.getNThreads());
+        modelParams.setGpuLayers(llm_parameters.getNGpuLayers());
+        
+        /*modelParams.setModelFilePath(llm_parameters.getFileModelPath());
         modelParams.setNThreads(llm_parameters.getNThreads());
-        modelParams.setNGpuLayers(llm_parameters.getNGpuLayers());
+        modelParams.setNGpuLayers(llm_parameters.getNGpuLayers());*/
         
         try (LlamaModel model = new LlamaModel(modelParams)) {
             
@@ -163,9 +176,9 @@ public class LLMFactChecker {
         List<String[]> records = llmReporter.readcsv(sourcepath);
         
         ModelParameters modelParams = new ModelParameters()
-            .setModelFilePath(modelpath)
-            .setNThreads(16)
-            .setNGpuLayers(43);
+            .setModel(modelpath)
+            .setThreads(16)
+            .setGpuLayers(43);
       
         List<String[]> outdata = new ArrayList<>();
         

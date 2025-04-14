@@ -101,9 +101,13 @@ public class LLMEnrichment
         modelParams = new ModelParameters();
         LLMConfiguration llmconfig = LLMConfiguration.getInstance();
         
-        modelParams.setModelFilePath(llmconfig.getModelFilePath());
+        modelParams.setModel(llmconfig.getModelFilePath());
+        modelParams.setThreads(llmconfig.getNumThreads());
+        modelParams.setGpuLayers(llmconfig.getLayers());
+        
+        /*modelParams.setModelFilePath(llmconfig.getModelFilePath());
         modelParams.setNThreads(llmconfig.getNumThreads());
-        modelParams.setNGpuLayers(llmconfig.getLayers());
+        modelParams.setNGpuLayers(llmconfig.getLayers());*/
         
     }
     
@@ -116,9 +120,13 @@ public class LLMEnrichment
         modelParams = new ModelParameters();
         LLMConfiguration llmconfig = LLMConfiguration.getInstance();
         
-        modelParams.setModelFilePath(llmconfig.getModelFilePath());
+        modelParams.setModel(llmconfig.getModelFilePath());
+        modelParams.setThreads(llmconfig.getNumThreads());
+        modelParams.setGpuLayers(llmconfig.getLayers());
+        
+        /*modelParams.setModelFilePath(llmconfig.getModelFilePath());
         modelParams.setNThreads(llmconfig.getNumThreads());
-        modelParams.setNGpuLayers(llmconfig.getLayers());
+        modelParams.setNGpuLayers(llmconfig.getLayers());*/
         
         LlamaModel model = new LlamaModel(modelParams);
         
@@ -148,9 +156,13 @@ public class LLMEnrichment
         
         modelParams = new ModelParameters();
         
-        modelParams.setModelFilePath(llm_parameters.getFileModelPath());
+        modelParams.setModel(llm_parameters.getFileModelPath());
+        modelParams.setThreads(llm_parameters.getNThreads());
+        modelParams.setGpuLayers(llm_parameters.getNGpuLayers());
+        
+        /*modelParams.setModelFilePath(llm_parameters.getFileModelPath());
         modelParams.setNThreads(llm_parameters.getNThreads());
-        modelParams.setNGpuLayers(llm_parameters.getNGpuLayers());
+        modelParams.setNGpuLayers(llm_parameters.getNGpuLayers());*/
         
         //ArrayList<String> result_data = new ArrayList();
         
@@ -192,12 +204,15 @@ public class LLMEnrichment
         
         
         modelParams = new ModelParameters()
-            .setModelFilePath(modelpath)
+            .setModel(modelpath)
+            //.setModelFilePath(modelpath)
             //.setModelUrl("https://huggingface.co/TheBloke/CodeLlama-7B-GGUF/resolve/main/codellama-7b.Q2_K.gguf")
             //.setHuggingFaceRepository("TheBloke/CapybaraHermes-2.5-Mistral-7B-GGUF")
             //.setHuggingFaceFile("capybarahermes-2.5-mistral-7b.Q2_K.gguf")
-            .setNThreads(16)
-            .setNGpuLayers(43);
+            .setThreads(16)
+            .setGpuLayers(43);
+                //.setNThreads(16)
+            //.setNGpuLayers(43);
       
         List<String[]> outdata = new ArrayList<>();
         
